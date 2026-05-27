@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Order | SeaMuse</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #3a4a5a;
+    --ocean-deep: #6a9ab8;
+    --ocean-mid: #8bbdd6;
+    --foam: #e8f4f8;
+    --sand: #f5f0e8;
+    --gold: #9a7d5a;
+    --white: #ffffff;
+  }
+
+  body {
+    background: #e8f2f7;
+    color: #2d4a5e;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── 背景 ── */
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 90%, rgba(180,220,235,0.5) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 45% at 85% 10%, rgba(200,230,242,0.4) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(245,240,232,0.3) 0%, transparent 70%),
+      linear-gradient(160deg, #daeef6 0%, #e8f4f8 40%, #f0f7f5 100%);
+  }
+
+  .wave-ring {
+    position: fixed;
+    border-radius: 50%;
+    border: 1px solid rgba(100,170,200,0.18);
+    animation: ripple 8s ease-out infinite;
+    pointer-events: none;
+  }
+  .wave-ring:nth-child(1) { width:600px; height:600px; bottom:-200px; right:-100px; animation-delay:0s; }
+  .wave-ring:nth-child(2) { width:900px; height:900px; bottom:-350px; right:-250px; animation-delay:2s; }
+  .wave-ring:nth-child(3) { width:1200px; height:1200px; bottom:-500px; right:-400px; animation-delay:4s; }
+
+  @keyframes ripple {
+    0% { opacity: 0.6; transform: scale(0.95); }
+    50% { opacity: 0.2; }
+    100% { opacity: 0.6; transform: scale(1.05); }
+  }
+
+  /* ── レイアウト ── */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* ── ヘッダー ── */
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeUp 0.9s ease both;
+  }
+
+  .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    color: #2d4a5e;
+    display: block;
+  }
+
+  .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    color: rgba(80,120,150,0.7);
+    margin-top: 6px;
+    display: block;
+  }
+
+  .divider {
+    width: 48px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #9a7d5a, transparent);
+    margin: 20px auto;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 3vw, 1.15rem);
+    letter-spacing: 0.22em;
+    color: rgba(60,100,130,0.7);
+    font-weight: 400;
+  }
+
+  /* ── カード ── */
+  .card {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(100,160,195,0.2);
+    border-radius: 2px;
+    padding: 32px 28px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(12px);
+    animation: fadeUp 0.9s ease both;
+  }
+  .card:nth-child(1) { animation-delay: 0.15s; }
+  .card:nth-child(2) { animation-delay: 0.25s; }
+  .card:nth-child(3) { animation-delay: 0.35s; }
+  .card:nth-child(4) { animation-delay: 0.45s; }
+  .card:nth-child(5) { animation-delay: 0.50s; }
+  .card:nth-child(6) { animation-delay: 0.55s; }
+
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    color: #7a6040;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(184,151,106,0.25);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', 'Shippori Mincho', serif;
+    font-size: clamp(1.25rem, 4vw, 1.55rem);
+    font-weight: 400;
+    color: #2d4a5e;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── About テキスト ── */
+  .lead {
+    font-size: 0.88rem;
+    line-height: 2.1;
+    color: rgba(45,74,94,0.72);
+  }
+
+  /* ── フロー ── */
+  .flow { list-style: none; }
+  .flow li {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(100,160,195,0.15);
+  }
+  .flow li:last-child { border-bottom: none; padding-bottom: 0; }
+  .flow-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    font-weight: 300;
+    color: #9a7d5a;
+    line-height: 1;
+    min-width: 30px;
+  }
+  .flow-body { flex: 1; }
+  .flow-ttl {
+    font-size: 0.84rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: #2d4a5e;
+    margin-bottom: 5px;
+  }
+  .flow-desc {
+    font-size: 0.78rem;
+    line-height: 1.85;
+    color: rgba(45,74,94,0.6);
+  }
+
+  /* ── サイズグリッド ── */
+  .size-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .size-card {
+    border: 1px solid rgba(100,160,195,0.25);
+    border-radius: 2px;
+    padding: 16px 14px;
+    background: rgba(255,255,255,0.45);
+  }
+  .size-card.featured {
+    border-color: rgba(154,125,90,0.4);
+    background: rgba(154,125,90,0.07);
+  }
+
+  .size-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    color: #2d4a5e;
+    display: block;
+  }
+  .size-dim {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: rgba(60,100,130,0.4);
+    display: block;
+    margin-top: 3px;
+  }
+  .size-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: #7a6040;
+    display: block;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+  .size-note {
+    font-size: 0.68rem;
+    color: rgba(60,100,130,0.45);
+    display: block;
+    margin-top: 5px;
+    line-height: 1.6;
+  }
+
+  /* ── テーマ一覧 ── */
+  .theme-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .theme-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgba(100,160,195,0.18);
+    border-radius: 2px;
+    background: rgba(255,255,255,0.38);
+  }
+  .theme-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    color: rgba(154,125,90,0.6);
+    letter-spacing: 0.1em;
+    min-width: 20px;
+  }
+  .theme-name {
+    font-size: 0.84rem;
+    letter-spacing: 0.08em;
+    color: #2d4a5e;
+    font-weight: 400;
+  }
+  .theme-desc {
+    font-size: 0.74rem;
+    color: rgba(60,100,130,0.5);
+    margin-left: auto;
+    text-align: right;
+    line-height: 1.5;
+  }
+  .theme-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .theme-sub {
+    font-size: 0.74rem;
+    line-height: 1.75;
+    color: rgba(60,100,130,0.55);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── カラートーン ── */
+  .tone-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tone-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid rgba(100,160,195,0.2);
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: rgba(45,74,94,0.65);
+    background: rgba(255,255,255,0.45);
+  }
+  .tone-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── お問い合わせ ── */
+  .contact-card {
+    background: rgba(154,125,90,0.05);
+    border: 1px solid rgba(154,125,90,0.25);
+    border-radius: 2px;
+    padding: 32px 28px;
+    margin-bottom: 20px;
+    text-align: center;
+    animation: fadeUp 0.9s ease both;
+    animation-delay: 0.6s;
+  }
+  .contact-note {
+    font-size: 0.82rem;
+    line-height: 2;
+    color: rgba(45,74,94,0.6);
+    letter-spacing: 0.06em;
+    margin-bottom: 28px;
+  }
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .contact-btn {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    background: transparent;
+    border: 1px solid rgba(154,125,90,0.45);
+    color: #7a6040;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding: 17px 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+    text-decoration: none;
+  }
+  .contact-btn:hover {
+    background: rgba(154,125,90,0.1);
+    border-color: #7a6040;
+    color: #2d4a5e;
+    letter-spacing: 0.33em;
+  }
+  .contact-btn .btn-sub {
+    display: block;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: none;
+    color: rgba(122,96,64,0.6);
+    margin-top: 4px;
+  }
+  .contact-btn.instagram {
+    border-color: rgba(100,160,195,0.35);
+    color: rgba(60,100,130,0.7);
+  }
+  .contact-btn.instagram:hover {
+    background: rgba(100,160,195,0.07);
+    border-color: rgba(100,160,195,0.55);
+    color: #2d4a5e;
+  }
+  .contact-btn.instagram .btn-sub {
+    color: rgba(60,100,130,0.45);
+  }
+
+  /* ── フッター ── */
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    animation: fadeUp 0.9s ease both;
+    animation-delay: 0.7s;
+  }
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: rgba(60,100,130,0.25);
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 48px 18px 64px; }
+    .card { padding: 24px 18px; }
+    .contact-card { padding: 26px 18px; }
+    .theme-desc { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="wave-ring"></div>
+  <div class="wave-ring"></div>
+  <div class="wave-ring"></div>
+</div>
+
+<div class="container">
+
+  <header>
+    <span class="brand">SeaMuse</span>
+    <span class="tagline">Bring the sea closer to you</span>
+    <div class="divider"></div>
+    <span class="page-title">C U S T O M &nbsp; O R D E R</span>
+  </header>
+
+  <!-- 01 About -->
+  <div class="card">
+    <div class="section-label">01 &nbsp; About</div>
+    <div class="section-title">癒しの海アート、一点もののオーダー制作</div>
+    <p class="lead">
+      海の波音が聞こえるような、水面の光にエネルギーをもらえるような、<br>
+      空の綺麗なグラデーションに癒されるような、癒し海アートをお届けします。<br>
+      ご希望のサイズ・テーマ・カラーをもとに丁寧に仕上げます。
+    </p>
+  </div>
+
+  <!-- 02 Flow -->
+  <div class="card">
+    <div class="section-label">02 &nbsp; Flow</div>
+    <div class="section-title">ご注文の流れ</div>
+    <ol class="flow">
+      <li>
+        <span class="flow-num">01</span>
+        <div class="flow-body">
+          <div class="flow-ttl">お問い合わせ</div>
+          <div class="flow-desc">Instagram DM またはメールにてご連絡ください。<br>ご希望のサイズ・テーマ・カラートーン・用途・納期などをお知らせいただくとスムーズです。</div>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num">02</span>
+        <div class="flow-body">
+          <div class="flow-ttl">ヒアリング・お見積り</div>
+          <div class="flow-desc">内容を確認後、正式なお見積りと納期をご案内いたします。</div>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num">03</span>
+        <div class="flow-body">
+          <div class="flow-ttl">制作・途中経過のご確認</div>
+          <div class="flow-desc">制作中に写真でご確認いただけます。この段階でのご要望も承ります。</div>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num">04</span>
+        <div class="flow-body">
+          <div class="flow-ttl">完成・お届け</div>
+          <div class="flow-desc">完成後、丁寧に梱包してお届けします。配送・手渡しどちらも対応可能です。</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- 03 Size -->
+  <div class="card">
+    <div class="section-label">03 &nbsp; Size</div>
+    <div class="section-title">サイズと価格</div>
+    <div class="size-grid">
+      <div class="size-card">
+        <span class="size-name">S</span>
+        <span class="size-dim">約 22 × 16 cm</span>
+        <span class="size-price">¥5,000〜</span>
+      </div>
+      <div class="size-card">
+        <span class="size-name">F4</span>
+        <span class="size-dim">約 33 × 24 cm</span>
+        <span class="size-price">¥20,000〜</span>
+      </div>
+      <div class="size-card featured">
+        <span class="size-name">F6</span>
+        <span class="size-dim">約 41 × 32 cm</span>
+        <span class="size-price">¥35,000〜</span>
+        <span class="size-note">インテリアとして存在感のある大きさ</span>
+      </div>
+      <div class="size-card">
+        <span class="size-name">F8+</span>
+        <span class="size-dim">約 46 × 38 cm〜</span>
+        <span class="size-price">お見積り</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Theme -->
+  <div class="card">
+    <div class="section-label">04 &nbsp; Theme</div>
+    <div class="section-title">テーマ</div>
+    <ul class="theme-list">
+      <li class="theme-item">
+        <span class="theme-num">01</span>
+        <span class="theme-name">朝の海</span>
+        <span class="theme-desc">夜明けの光、静寂と期待感</span>
+      </li>
+      <li class="theme-item">
+        <span class="theme-num">02</span>
+        <span class="theme-name">昼間の海</span>
+        <span class="theme-desc">陽光きらぁく、開放的な青</span>
+      </li>
+      <li class="theme-item">
+        <span class="theme-num">03</span>
+        <span class="theme-name">夕焼けの海</span>
+        <span class="theme-desc">オレンジと紫が溶け合う黄昏</span>
+      </li>
+      <li class="theme-item theme-item--detail">
+        <span class="theme-num">04</span>
+        <div class="theme-body">
+          <span class="theme-name">海の風景と人・ペットさん</span>
+          <span class="theme-sub">好きな海の風景（朝の海・昼間の海・夕焼けの海など）にご自身とペットさんを入れて仕上げられます。</span>
+        </div>
+      </li>
+      <li class="theme-item">
+        <span class="theme-num">05</span>
+        <span class="theme-name">その他</span>
+        <span class="theme-desc">ご相談ください</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 05 Color Tone -->
+  <div class="card">
+    <div class="section-label">05 &nbsp; Color Tone</div>
+    <div class="section-title">カラートーン</div>
+    <div class="tone-grid">
+      <span class="tone-chip">
+        <span class="tone-dot" style="background:#1a3a5c"></span>深い青・ネイビー
+      </span>
+      <span class="tone-chip">
+        <span class="tone-dot" style="background:#5ab4d6"></span>クリアブルー・透明感
+      </span>
+      <span class="tone-chip">
+        <span class="tone-dot" style="background:#d4874a"></span>夕焼け・オレンジ・ゴールド
+      </span>
+      <span class="tone-chip">
+        <span class="tone-dot" style="background:#3a9e8f"></span>緑青・エメラルド
+      </span>
+      <span class="tone-chip">
+        <span class="tone-dot" style="background:#d4a0b0"></span>ピンク・アンニュイトーン
+      </span>
+      <span class="tone-chip">
+        <span class="tone-dot" style="background:linear-gradient(135deg,#5ab4d6,#d4874a)"></span>おまかせ
+      </span>
+    </div>
+  </div>
+
+  <!-- お問い合わせ -->
+  <div class="contact-card">
+    <p class="contact-note">
+      ご希望のサイズ・テーマ・カラートーン・用途・納期などを<br>
+      添えて、お気軽にご連絡ください。
+    </p>
+    <div class="btn-group">
+      <a class="contact-btn instagram" href="https://www.instagram.com/ayako_seamuse/" target="_blank">
+        Instagram DM &nbsp;→
+        <span class="btn-sub">@ayako_seamuse</span>
+      </a>
+      <a class="contact-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSeBUFpyWQJ40_lvUTP9zl8ggGWGmSkUDo4xAiVYeBZ9N0FQBw/viewform" target="_blank">
+        お問い合わせフォーム &nbsp;→
+        <span class="btn-sub">Google Form</span>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p class="footer-brand">SeaMuse &nbsp;·&nbsp; Zushi / Hayama</p>
+  </footer>
+
+</div>
+</body>
+</html>
